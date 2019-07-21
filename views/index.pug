@@ -1,0 +1,113 @@
+extends ./layouts/app
+block content
+    #hkchat
+        .row.mx-0
+            .col-md-3.py-2.px-0.border-right
+                .clearfix.mt-3.px-3
+                    .float-left
+                        h1.h2 Channels
+                    .float-right.pt-1
+                        button.btn.btn-primary.rounded-circle(data-toggle="modal" data-target="#mx2" style='width:35px;height:35px') +
+                ul.list-group.mt-3.list-group-flush.v
+                    li.list-group-item(v-for="(ch, ind) in channels" :key="ch._id" v-bind:class="{active: (currentChannel===ind)}" @click="activate(ind)")
+                        span {{ch.name}}
+                .text-left.mt-3.px-3
+                    p.mb-0 Logged in as {{user.username}}, 
+                        a(href="/users/logout")
+                            b Logout
+                .text-center.mt-4
+                    button.btn.btn-primary.px-4(data-toggle="modal" data-target="#opc8") Change Password
+            .col-md-9.py-2
+                .d(v-if='channels.length>0')
+                    .d(v-if='channels[currentChannel].members.includes(user._id)')
+                        .clearfix
+                            .float-left
+                                h1.h2 {{channels[currentChannel].name}}
+                            .float-right
+                                button.btn.btn-sm.btn-danger.px-4.mr-2(v-if="allowed()" @click="deleteChannel(null)") Delete
+                                button.btn.btn-sm.btn-dark.px-4(v-if="allowed()" data-toggle="modal" data-target="#mx3") Settings
+                        .pt-3.border-top
+                            section#messages.pb-3.px-3
+                                .message(v-for='(msg,ind) in messages' :key='msg._id')
+                                    .clearfix(v-bind:class="{'right': (msg.user_id._id===user._id)}")
+                                        .m
+                                            strong.mb-0(v-if="msg.user_id._id!==user._id") {{msg.user_id.username}}
+                                            p.m-0.body.shadow-lg {{msg.body}}
+                                            .meta.mt-1
+                                                small.text-muted(:title='msg.createdAt') {{formatM(msg.createdAt)}}
+                            section.pt-3.border-top
+                                form(action="/messages/send" @submit="sendMessage")
+                                    .form-group
+                                        textarea.form-control(v-model="currentMessage" placeholder="Enter your message..." @keydown="tix")
+                                    .text-right
+                                        button.btn.btn-primary.px-4.btn-sm Send
+                    .text-center.my-5.py-5(v-else)
+                        h3 Join this Channel
+                        button.btn.btn-success.px-5(@click="join") Join Now!
+                .text-center.my-4.py-4(v-else)
+                    h3 No Channels Found
+                    p.lead.m-0 Please create or select a Channel
+        .m
+            #mx2.modal.fade(tabindex='-1' role='dialog' aria-labelledby='mx2' aria-hidden='true')
+                .modal-dialog.modal-dialog-centered(role='document')
+                    .modal-content
+                        .modal-header
+                            h5.modal-title Create a Channel
+                            button.close(type='button' data-dismiss='modal' aria-label='Close')
+                            span(aria-hidden='true') ×
+                        .modal-body
+                            form#cc(@submit="ccProceed" data-modal="#mx2")
+                                fieldset.form-group
+                                    label Channel Name
+                                    input#mc02.form-control(type="text" name="name" placeholder="Channel name...")
+                                fieldset.form-group
+                                    label Message Destruction (in Minutes)
+                                    input.form-control(type="number" value="60" name="deleteTime")
+                                fieldset.form-group
+                                    label Captcha
+                                    .block.mb-2.text-center.captchaImage
+                                        img(src="/captcha" alt="Captcha image")
+                                    input.form-control(placeholder="Enter the text from the image..." type="text" name="captcha")
+                                .text-center.mt-3
+                                    button.btn.btn-primary.px-5 Create Channel
+            #mx3.modal.fade(tabindex='-1' role='dialog' aria-labelledby='mx3' aria-hidden='true' v-if="channels.length > 0")
+                .modal-dialog.modal-dialog-centered(role='document')
+                    .modal-content
+                        .modal-header
+                            h5.modal-title Editing "{{channels[currentChannel].name}}"
+                            button.close(type='button' data-dismiss='modal' aria-label='Close')
+                            span(aria-hidden='true') ×
+                        .modal-body
+                            form#uc(@submit="ucProceed" data-modal="#mx3")
+                                fieldset.form-group
+                                    label Channel Name
+                                    input.form-control(type="text" name="name" placeholder="Channel name..." v-model="channels[currentChannel].name")
+                                fieldset.form-group
+                                    label Message Destruction (in Minutes)
+                                    input.form-control(type="number" name="deleteTime" v-model="channels[currentChannel].deleteTime")
+                                .text-center
+                                    button.btn.btn-primary.px-5 Update
+            #opc8.modal.fade(tabindex='-1' role='dialog' aria-labelledby='opc8' aria-hidden='true' v-if="Boolean(user._id)")
+                .modal-dialog.modal-dialog-centered(role='document')
+                    .modal-content
+                        .modal-header
+                            h5.modal-title Change Password
+                            button.close(type='button' data-dismiss='modal' aria-label='Close')
+                            span(aria-hidden='true') ×
+                        .modal-body
+                            form(@submit="changePassword" data-modal="#opc8")
+                                fieldset.form-group
+                                    label Current Password
+                                    input.form-control(type="password" name="cpass" required)
+                                fieldset.form-group
+                                    label New Password
+                                    input.form-control(type="password" name="npass" required)
+                                .text-center
+                                    button.btn.btn-primary.px-5 Update Password
+        .loader(v-if="loading")
+            .spinner-border
+block scripts
+    script(src="/socket.io.js")
+    //- script(src='https://cdn.jsdelivr.net/npm/vue/dist/vue.js')
+    script(src='https://vuejs.org/js/vue.min.js')
+    script(src="/chat.js")
