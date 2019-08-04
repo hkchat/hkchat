@@ -188,6 +188,9 @@ const hkChat = new Vue({
       e.preventDefault();
       const dv = $(e.target);
       const d = this;
+      if ($("#np").val() !== $("cnf").val()) {
+        return alert("Passwords do not match");
+      }
       $.post({
         url: "/users/changePassword",
         data: dv.serialize(),

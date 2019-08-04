@@ -11,7 +11,7 @@ html(lang="en")
         #app
             header
                 nav.navbar.navbar-light.bg-light
-                    a.navbar-brand(href='/') HKCHAT.ORG
+                    a.navbar-brand(href='/') HKCHAT
             main
                 - var flash = getMessages()
                 if flash
@@ -26,7 +26,7 @@ html(lang="en")
                                     .alert.alert-danger= msg
                 block content
             footer.text-center.py-3
-                p.m-0 &copy; 2019 - HKCHAT.ORG. All Rights Reserved
+                p.m-0 Copyright &copy; 2019 HKCHAT. All rights reserved.
         .loader#loader1
             .spinner-border
         script.

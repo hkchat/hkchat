@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const config = require("../config/index");
 const auth = require("../auth");
+const slowDown = require("express-slow-down");
 
 // models
 const User = require("../models/User");
@@ -34,8 +35,14 @@ router.get("/:channel_id/all", auth.isLoggedIn, async (req, res) => {
   } catch (err) {}
 });
 
+const messageLimit = slowDown({
+  windowMs: 5 * 60 * 1000,
+  delayAfter: 5,
+  delayMs: 100
+});
+
 module.exports = io => {
-  router.post("/send", auth.isLoggedIn, async (req, res) => {
+  router.post("/send", auth.isLoggedIn, messageLimit, async (req, res) => {
     const channel = await Channel.findById(req.body.channel_id);
     var message = {
       body: req.body.message,
