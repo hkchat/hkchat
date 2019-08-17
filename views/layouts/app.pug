@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        meta(http-equiv="X-UA-Compatible", content="ie=edge")
+        link(rel="stylesheet" href="/bootstrap.min.css")
+        link(rel="stylesheet" href="/app.css")
+        title= title || 'HK Chatting'
+    body
+        #app
+            header
+                nav.navbar.navbar-light.bg-light
+                    a.navbar-brand(href='/') HK Chatting
+            main
+                - var flash = getMessages()
+                if flash
+                    .msgs
+                        if flash.success
+                            .container.my-4
+                                each msg2 in flash.success
+                                    .alert.alert-success= msg2
+                        if flash.error
+                            .container.my-4
+                                each msg in flash.error
+                                    .alert.alert-danger= msg
+                block content
+            footer.text-center.py-3
+                p.m-0 &copy; 2019 - HK Chatting
+        .loader#loader1
+            .spinner-border
+        script.
+            window.onload = function(){
+                document.getElementById('loader1').remove();
+            }
+        script(src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js")
+        srcipt(src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js")
+        script(src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js")
+        block scripts
