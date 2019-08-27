@@ -1,7 +1,7 @@
 {
-  "name": "hk_chat",
+  "name": "hkchat",
   "version": "1.0.0",
-  "description": "HK Chat",
+  "description": "HKCHAT",
   "main": "app.js",
   "scripts": {},
   "author": "",

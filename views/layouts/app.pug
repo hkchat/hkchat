@@ -6,12 +6,12 @@ html(lang="en")
         meta(http-equiv="X-UA-Compatible", content="ie=edge")
         link(rel="stylesheet" href="/bootstrap.min.css")
         link(rel="stylesheet" href="/app.css")
-        title= title || 'HK Chatting'
+        title= title || 'HKCHAT.ORG'
     body
         #app
             header
                 nav.navbar.navbar-light.bg-light
-                    a.navbar-brand(href='/') HK Chatting
+                    a.navbar-brand(href='/') HKCHAT.ORG
             main
                 - var flash = getMessages()
                 if flash
@@ -26,7 +26,7 @@ html(lang="en")
                                     .alert.alert-danger= msg
                 block content
             footer.text-center.py-3
-                p.m-0 &copy; 2019 - HK Chatting
+                p.m-0 &copy; 2019 - HKCHAT.ORG
         .loader#loader1
             .spinner-border
         script.
