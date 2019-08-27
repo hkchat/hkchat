@@ -17,7 +17,7 @@ const flash = require("express-flash-messages");
 
 app.use(
   session({
-    secret: "hk chatting",
+    secret: "hkchat",
     resave: false,
     saveUninitialized: true,
     cookie: {}
